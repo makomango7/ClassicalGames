@@ -82,8 +82,6 @@
  * 3 4 2  5 3 1  2 3 5
  */
 
-
-
         private void RotatePlayer()
         {
             _currentInputIndex++; 
@@ -198,7 +196,7 @@
                 Console.WriteLine("First diagonal: "  + result + "\n");
                 return true;
             }
-            index = GetIndex(2, 0);
+            index = GetIndex(Size - 1, 0);
             if(_arr[index] == '-')
             {
                 return false;
@@ -206,7 +204,7 @@
             result = true;
             for(int i = 1; i < Size; i++)
             { 
-                result &= _arr[GetIndex(2, 0)] == _arr[GetIndex(Size - 1 - i, i)];
+                result &= _arr[GetIndex(Size - 1, 0)] == _arr[GetIndex(Size - 1 - i, i)];
             }
             if(result)
             {
