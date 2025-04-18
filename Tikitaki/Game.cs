@@ -5,10 +5,12 @@
         public static int Size { get => 3; }
 
         char[] _arr = new char[9];
-        bool _win;
 
         char[] _avatars = new char[2] { 'x', 'o' };
-        int _currentInput;
+
+        int _currentInputIndex = 0;
+
+        private char CurrentAvatar => _avatars[_currentInputIndex];
 
         public Game()
         {
@@ -18,9 +20,11 @@
             }
             System.Console.WriteLine("Game");
             RedrawBoard();
+            Start();
+        } 
 
-            _currentInput = 0;
-
+        private void Start()
+        { 
             Console.WriteLine("Type exit to exit");
             while(true)
             {
@@ -30,17 +34,34 @@
                 {
                     break;
                 }
-                string[] results = inputLine.Split(',');
-                int x = int.Parse(results[0]);
-                int y = int.Parse(results[1]);
 
+                string[] results = inputLine.Split(',');
+                
+                if(results.Length != 2)
+                {
+                    System.Console.WriteLine("Wrong input");
+                    continue;
+                }
+                int x = -1;                
+                int y = -1;
+
+                if(!int.TryParse(results[0], out x))
+                {
+                    Console.WriteLine("Wrong input!");
+                    continue;
+                }
+                if(!int.TryParse(results[1], out y))
+                {
+                    Console.WriteLine("Wrong input!");
+                    continue;
+                }
                 if(x < 0 || x >= Size || y < 0 || y >= Size)
                 {
                     System.Console.WriteLine("Your value are out of cell size");
                     continue;
                 }	
 
-                int res = MakeATurn(x,y, CurrentAvatar);
+                int res = MakeATurn(x, y);
 
                 if(res == -1)
                 {
@@ -54,8 +75,7 @@
 
             }
             System.Console.WriteLine("Game is over! Winner is: " + CurrentAvatar);
-
-        } 
+        }
 
 /*
  * 0 1 2  3 4 5  6 7 8
@@ -63,24 +83,23 @@
  */
 
 
-        private char CurrentAvatar => _avatars[_currentInput];
 
         private void RotatePlayer()
         {
-            _currentInput++; 
-            if((int)_currentInput > 1)
+            _currentInputIndex++; 
+            if((int)_currentInputIndex > 1)
             {
-                _currentInput = 0;
+                _currentInputIndex = 0;
             }
         }
 
-        public int MakeATurn(int x, int y, char character) 
+        public int MakeATurn(int x, int y) 
         {
             if(_arr[GetIndex(x,y)] != '-')
             {
                 return -1; 
             }
-            _arr[GetIndex(x,y)] = character;
+            _arr[GetIndex(x,y)] = CurrentAvatar;
 
 
             bool winCondition = CheckWinCondition();
