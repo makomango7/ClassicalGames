@@ -2,6 +2,8 @@
 {
     internal class Game
     {
+        public static int Size { get => 3; }
+
         char[] _arr = new char[9];
         bool _win;
 
@@ -15,7 +17,7 @@
                 _arr[i] = '-';
             }
             System.Console.WriteLine("Game");
-            Out();
+            RedrawBoard();
 
             _currentInput = 0;
 
@@ -32,7 +34,7 @@
                 int x = int.Parse(results[0]);
                 int y = int.Parse(results[1]);
 
-                if(x < 0 || x >= 3 || y < 0 || y >= 3)
+                if(x < 0 || x >= Size || y < 0 || y >= Size)
                 {
                     System.Console.WriteLine("Your value are out of cell size");
                     continue;
@@ -83,8 +85,7 @@
 
             bool winCondition = CheckWinCondition();
 
-            Out();
-
+            RedrawBoard();
 
             if(winCondition)
             {
@@ -96,16 +97,16 @@
             return 0;
         }
 
-        private int GetIndex(int x, int y) => y * 3 + x;
+        private int GetIndex(int x, int y) => y * Size + x;
         
-        private int GetXFromIndex(int index) => index / 3;
+        private int GetXFromIndex(int index) => index / Size;
 
-        private int GetYFromIndex(int index) => index % 3;
+        private int GetYFromIndex(int index) => index % Size;
         
         private bool CheckWinCondition()
         {
            bool win;
-           for(int x = 0; x < 3; x++)
+           for(int x = 0; x < Size; x++)
            {
                 win = CheckVerticalLineWinCondition(x);
                 Console.Write("X: " + x + " " + win + "; \n");
@@ -115,7 +116,7 @@
                 }
            }
             
-           for(int y = 0; y < 3; y++)
+           for(int y = 0; y < Size; y++)
            {
                 win = CheckHorizontalLineWinCondition(y);
 
@@ -138,7 +139,7 @@
             }
 
             bool result = true;
-            for(int y = 1; y < 3; y++)
+            for(int y = 1; y < Size; y++)
             {  
                 result &= _arr[GetIndex(x, 0)] == _arr[GetIndex(x, y)];
             }
@@ -154,7 +155,7 @@
             }
 
             bool result = true;
-            for(int x = 1; x < 3; x++)
+            for(int x = 1; x < Size; x++)
             {  
                 result &= _arr[GetIndex(0, y)] == _arr[GetIndex(x, y)];
             }
@@ -169,7 +170,7 @@
                 return false;
             }
             bool result = true; // req: n=m
-            for(int i = 1; i < 3; i++)
+            for(int i = 1; i < Size; i++)
             {
                 result &= _arr[GetIndex(0, 0)] == _arr[GetIndex(i, i)];
             }
@@ -184,9 +185,9 @@
                 return false;
             }
             result = true;
-            for(int i = 1; i < 3; i++)
+            for(int i = 1; i < Size; i++)
             { 
-                result &= _arr[GetIndex(2, 0)] == _arr[GetIndex(3 - 1 - i, i)];
+                result &= _arr[GetIndex(2, 0)] == _arr[GetIndex(Size - 1 - i, i)];
             }
             if(result)
             {
@@ -197,11 +198,11 @@
             return false;
         }
 
-        private void Out()
+        private void RedrawBoard()
         {
             for(int i = 0; i < _arr.Length; i++)
             {
-                if(i != 0 && i % 3 == 0)
+                if(i != 0 && i % Size == 0)
                 {
                     Console.WriteLine();
                 }
