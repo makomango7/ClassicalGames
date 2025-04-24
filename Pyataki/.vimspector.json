@@ -1,0 +1,17 @@
+{
+  "configurations": {
+    "launch - netcoredbg": {
+      "adapter": "netcoredbg",
+      "filetypes": [ "cs", "fsharp", "vbnet" ], // optional
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/bin/Debug/net8.0/Pyataki.dll",
+        "args": [],
+        "stopAtEntry": true,
+	"console": "integratedTerminal",
+        "cwd": "${workspaceRoot}",
+        "env": {}
+      }
+    }
+  }
+}
