@@ -4,15 +4,14 @@ namespace Magicboard.Tikitaki
 {
     public class Game
     {
-        public int Size { get => 3; }
-
         char[] _arr = new char[9];
-
-        char[] _avatars = new char[2] { 'x', 'o' };
-
-        int _currentInputIndex = 0;
-
-        public char CurrentAvatar => _avatars[_currentInputIndex];
+        char[] _avatars = new char[3] { '-', 'x', 'o' };
+        int _currentInputIndex = 1;
+        
+        public int GameRes { get; private set; }
+        public int Size { get => 3; }
+        public char CurrentAvatar { get => _avatars[_currentInputIndex]; }
+        public char[] Arr { get => _arr; }
 
         public Game()
         {
@@ -21,12 +20,35 @@ namespace Magicboard.Tikitaki
                 _arr[i] = '-';
             }
             System.Console.WriteLine("Game");
-            RedrawBoard();
-            Start();
         } 
 
-        private void Start()
-        { 
+/*
+ * Все просто, как только происходит один из
+ * вид-кондишинов - игра тут же завершается.
+ * Статусные поля переводятся в соответствующие состояния.
+ */
+        
+        public int MakeATurn(int x, int y) 
+        {
+            if(_arr[GetIndex(x, y, Size)] != '-')
+            {
+                return -1;  // cell should be not captured! 
+            }
+            _arr[GetIndex(x, y, Size)] = CurrentAvatar;
+
+            if(CheckWinCondition())
+            {
+                return 1; // game is won by somebody 
+            }
+            if(CheckNoEmptyCellsCondition())
+            {
+                _currentInputIndex = 0;
+                return 1; 
+            }
+
+            RotatePlayer();
+            
+            return 0; // normal day, normal turn 
         }
 
 /*
@@ -37,36 +59,26 @@ namespace Magicboard.Tikitaki
         private void RotatePlayer()
         {
             _currentInputIndex++; 
-            if((int)_currentInputIndex > 1)
+            if((int)_currentInputIndex > 2)
             {
-                _currentInputIndex = 0;
+                _currentInputIndex = 1;
             }
         }
 
-        public int MakeATurn(int x, int y) 
+        #region Check Conditions 
+
+        private bool CheckNoEmptyCellsCondition()
         {
-            if(_arr[GetIndex(x, y, Size)] != '-')
+            for(int i = 0; i < _arr.Length; i++)
             {
-                return -1; 
+                if(_arr[i] == '-')
+                { 
+                    return false;        // there is still an '-' cell!
+                }
             }
-            _arr[GetIndex(x, y, Size)] = CurrentAvatar;
-
-
-            bool winCondition = CheckWinCondition();
-
-            RedrawBoard();
-
-            if(winCondition)
-            {
-                return 1; 
-            }
-            
-            RotatePlayer();
-
-            return 0;
+            return true;
         }
 
-        
         private bool CheckWinCondition()
         {
            bool win;
@@ -162,18 +174,7 @@ namespace Magicboard.Tikitaki
             return false;
         }
 
-        private void RedrawBoard()
-        {
-            for(int i = 0; i < _arr.Length; i++)
-            {
-                if(i != 0 && i % Size == 0)
-                {
-                    Console.WriteLine();
-                }
-                Console.Write(_arr[i] + " ");
-            }
-            Console.WriteLine();
-            Console.WriteLine();
-        }
+        #endregion
+
     }
 }
