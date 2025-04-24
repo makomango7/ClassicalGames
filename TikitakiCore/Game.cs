@@ -1,8 +1,10 @@
-﻿namespace Tikitaki
+﻿using static Magicboard.Common.CommonExtensions;
+
+namespace Magicboard.Tikitaki
 {
-    internal class Game
+    public class Game
     {
-        public static int Size { get => 3; }
+        public int Size { get => 3; }
 
         char[] _arr = new char[9];
 
@@ -10,7 +12,7 @@
 
         int _currentInputIndex = 0;
 
-        private char CurrentAvatar => _avatars[_currentInputIndex];
+        public char CurrentAvatar => _avatars[_currentInputIndex];
 
         public Game()
         {
@@ -25,56 +27,6 @@
 
         private void Start()
         { 
-            Console.WriteLine("Type exit to exit");
-            while(true)
-            {
-                Console.WriteLine("Enter next turn: ");
-                string inputLine = Console.ReadLine();
-                if(inputLine == "exit")
-                {
-                    break;
-                }
-
-                string[] results = inputLine.Split(',');
-                
-                if(results.Length != 2)
-                {
-                    System.Console.WriteLine("Wrong input");
-                    continue;
-                }
-                int x = -1;                
-                int y = -1;
-
-                if(!int.TryParse(results[0], out x))
-                {
-                    Console.WriteLine("Wrong input!");
-                    continue;
-                }
-                if(!int.TryParse(results[1], out y))
-                {
-                    Console.WriteLine("Wrong input!");
-                    continue;
-                }
-                if(x < 0 || x >= Size || y < 0 || y >= Size)
-                {
-                    System.Console.WriteLine("Your value are out of cell size");
-                    continue;
-                }	
-
-                int res = MakeATurn(x, y);
-
-                if(res == -1)
-                {
-                    System.Console.WriteLine("Looks like, this cell is captured already");
-                    continue;
-                }
-                else if(res == 1)
-                {
-                    break;
-                }	
-
-            }
-            System.Console.WriteLine("Game is over! Winner is: " + CurrentAvatar);
         }
 
 /*
@@ -93,11 +45,11 @@
 
         public int MakeATurn(int x, int y) 
         {
-            if(_arr[GetIndex(x,y)] != '-')
+            if(_arr[GetIndex(x, y, Size)] != '-')
             {
                 return -1; 
             }
-            _arr[GetIndex(x,y)] = CurrentAvatar;
+            _arr[GetIndex(x, y, Size)] = CurrentAvatar;
 
 
             bool winCondition = CheckWinCondition();
@@ -114,11 +66,6 @@
             return 0;
         }
 
-        private int GetIndex(int x, int y) => y * Size + x;
-        
-        private int GetXFromIndex(int index) => index / Size;
-
-        private int GetYFromIndex(int index) => index % Size;
         
         private bool CheckWinCondition()
         {
@@ -149,7 +96,7 @@
 
         private bool CheckVerticalLineWinCondition(int x)
         {
-            int index = GetIndex(x, 0);
+            int index = GetIndex(x, 0, Size);
             if(_arr[index] == '-')
             {
                 return false;
@@ -158,14 +105,14 @@
             bool result = true;
             for(int y = 1; y < Size; y++)
             {  
-                result &= _arr[GetIndex(x, 0)] == _arr[GetIndex(x, y)];
+                result &= _arr[GetIndex(x, 0, Size)] == _arr[GetIndex(x, y, Size)];
             }
             return result;
         }
         
         private bool CheckHorizontalLineWinCondition(int y)
         {
-            int index = GetIndex(0, y);
+            int index = GetIndex(0, y, Size);
             if(_arr[index] == '-')
             {
                 return false;
@@ -174,14 +121,14 @@
             bool result = true;
             for(int x = 1; x < Size; x++)
             {  
-                result &= _arr[GetIndex(0, y)] == _arr[GetIndex(x, y)];
+                result &= _arr[GetIndex(0, y, Size)] == _arr[GetIndex(x, y, Size)];
             }
             return result;
         }
 
         private bool CheckDiagonalWinCondition()
         {
-            int index = GetIndex(0, 0);
+            int index = GetIndex(0, 0, Size);
             if(_arr[index] == '-')
             {
                 return false;
@@ -189,14 +136,14 @@
             bool result = true; // req: n=m
             for(int i = 1; i < Size; i++)
             {
-                result &= _arr[GetIndex(0, 0)] == _arr[GetIndex(i, i)];
+                result &= _arr[GetIndex(0, 0, Size)] == _arr[GetIndex(i, i, Size)];
             }
             if(result)
             {
                 Console.WriteLine("First diagonal: "  + result + "\n");
                 return true;
             }
-            index = GetIndex(Size - 1, 0);
+            index = GetIndex(Size - 1, 0, Size);
             if(_arr[index] == '-')
             {
                 return false;
@@ -204,7 +151,7 @@
             result = true;
             for(int i = 1; i < Size; i++)
             { 
-                result &= _arr[GetIndex(Size - 1, 0)] == _arr[GetIndex(Size - 1 - i, i)];
+                result &= _arr[GetIndex(Size - 1, 0, Size)] == _arr[GetIndex(Size - 1 - i, i, Size)];
             }
             if(result)
             {
