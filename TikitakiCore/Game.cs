@@ -28,27 +28,27 @@ namespace Magicboard.Tikitaki
  * Статусные поля переводятся в соответствующие состояния.
  */
         
-        public int MakeATurn(int x, int y) 
+        public TurnState MakeATurn(int x, int y) 
         {
             if(_arr[GetIndex(x, y, Size)] != '-')
             {
-                return -1;  // cell should be not captured! 
+                return TurnState.WrongInput;  // cell should be not captured! 
             }
             _arr[GetIndex(x, y, Size)] = CurrentAvatar;
 
             if(CheckWinCondition())
             {
-                return 1; // game is won by somebody 
+                return TurnState.GameFinshed; // game is won by somebody 
             }
             if(CheckNoEmptyCellsCondition())
             {
                 _currentInputIndex = 0;
-                return 1; 
+                return TurnState.GameFinshed; 
             }
 
             RotatePlayer();
             
-            return 0; // normal day, normal turn 
+            return TurnState.NormalTurn; // normal day, normal turn 
         }
 
 /*
@@ -176,5 +176,12 @@ namespace Magicboard.Tikitaki
 
         #endregion
 
+    }
+
+    public enum TurnState
+    {
+        WrongInput = -1,
+        NormalTurn = 0,
+        GameFinshed = 1
     }
 }

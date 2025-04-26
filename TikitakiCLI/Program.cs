@@ -2,54 +2,96 @@
 
 bool isDebug = false;
 
-SimpleTest1(new Game());
-//Start(new Game());
+RunTests();
 
 
-void SimpleTest1(Game game)
+
+void RunTests()
 {
-    game.MakeATurn(0,0);
-    RedrawBoard(game);
-    Thread.Sleep(150);
 
-    game.MakeATurn(1,1);
-    RedrawBoard(game);
-    Thread.Sleep(150);
+    var tests = new List<Func<bool>>()
+    {
+        () => SimpleTest1(new Game()),
+        () => SimpleTest2(new Game())
+    };
 
-    game.MakeATurn(2,2);
-    RedrawBoard(game);
-    Thread.Sleep(150);
 
-    game.MakeATurn(1,0);
-    RedrawBoard(game);
-    Thread.Sleep(150);
+    var results = new List<(bool, string)>();
+
+    foreach(var test in tests)
+    {
+        results.Add((test.Invoke(), test.Method.Name));
+    }
+
+
+    bool res = true;
+    foreach(var result in results)
+    {
+        res &= result.Item1;
+        Console.WriteLine($"{result.Item2} : {result.Item1}");    
+    }
+       
+    System.Console.WriteLine("All test result: " + res);
+}
+
+
+bool SimpleTest1(Game game)
+{
+    var inputSequence = new (int x, int y)[]
+    {
+        (0,0), (1,1), (2,2),
+        (1,0), (2,1), (0,1),
+        (0,2), (2,0), (1,2)
+    };
     
-    game.MakeATurn(2,1);
-    RedrawBoard(game);
-    Thread.Sleep(150);
-
-    game.MakeATurn(0,1);
-    RedrawBoard(game);
-    Thread.Sleep(150);
-
-
-    game.MakeATurn(0,2);
-    RedrawBoard(game);
-    Thread.Sleep(150);
-    
-    game.MakeATurn(2,0);
-    RedrawBoard(game);
-    Thread.Sleep(150);
-
-    game.MakeATurn(1,2);
-    RedrawBoard(game);
-    Thread.Sleep(150);
-
+    TurnState lastState = TurnState.NormalTurn;
+    foreach(var item in inputSequence)
+    {
+        lastState = game.MakeATurn(item.x, item.y);
+        RedrawBoard(game);
+        Thread.Sleep(75);
+    }
+    return lastState == TurnState.GameFinshed;
     /*
+     * Под вопросом:
      * Все-таки, игра должна еще сама проверять внутренние условия
      * своего продолжения (условия выполнения MakeATurn)
      */
 }
+
+bool SimpleTest2(Game game)
+{
+    var inputSequence = new (int x, int y)[]
+    {
+        (0,0), (1,1), (2,2),
+    };
+    
+    TurnState lastState = TurnState.NormalTurn;
+    foreach(var item in inputSequence)
+    {
+        lastState = game.MakeATurn(item.x, item.y);
+        RedrawBoard(game);
+        Thread.Sleep(75);
+    }
+    return lastState == TurnState.NormalTurn;
+}
+
+//bool MakeATurnAndDraw(Game game, int x, int y)
+//{
+//    // Вот здесь я уже не знаю что сказать после знака сравнения
+//    // Поэтому нумерации долж
+//    // game.MakeATurn(x, y) == ...
+
+//    if(game.MakeATurn(x, y) == TurnState.GameFinshed)
+//    {
+//        return false;
+//    }
+
+//    RedrawBoard(game);
+//    Thread.Sleep(150);
+
+//    return true;
+//}
     
 
 void Start(Game game)
@@ -91,18 +133,18 @@ void Start(Game game)
             continue;
         }	
 
-        int res = game.MakeATurn(x, y);
+        TurnState res = game.MakeATurn(x, y);
 
         RedrawBoard(game);
 
         // cell is captured already
-        if(res == -1) 
+        if(res == TurnState.WrongInput) 
         {
             System.Console.WriteLine("Looks like, this cell is captured already");
             continue;
         }
         // somebody won the game
-        else if(res == 1) 
+        else if(res == TurnState.GameFinshed) 
         {
             // finaly, we exit from input loop
             break;
