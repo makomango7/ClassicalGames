@@ -1,102 +1,16 @@
 ﻿using Magicboard.Tikitaki;
+using TikitakiCLI;
 
-bool isDebug = false;
+Tester.RunTests();
 
-RunTests();
-
-
-
-void RunTests()
-{
-
-    var tests = new List<Func<bool>>()
-    {
-        () => SimpleTest1(new Game()),
-        () => SimpleTest2(new Game())
-    };
+Start(new Game());
 
 
-    var results = new List<(bool, string)>();
 
-    foreach(var test in tests)
-    {
-        results.Add((test.Invoke(), test.Method.Name));
-    }
-
-
-    bool res = true;
-    foreach(var result in results)
-    {
-        res &= result.Item1;
-        Console.WriteLine($"{result.Item2} : {result.Item1}");    
-    }
-       
-    System.Console.WriteLine("All test result: " + res);
-}
-
-
-bool SimpleTest1(Game game)
-{
-    var inputSequence = new (int x, int y)[]
-    {
-        (0,0), (1,1), (2,2),
-        (1,0), (2,1), (0,1),
-        (0,2), (2,0), (1,2)
-    };
-    
-    TurnState lastState = TurnState.NormalTurn;
-    foreach(var item in inputSequence)
-    {
-        lastState = game.MakeATurn(item.x, item.y);
-        RedrawBoard(game);
-        Thread.Sleep(75);
-    }
-    return lastState == TurnState.GameFinshed;
-    /*
-     * Под вопросом:
-     * Все-таки, игра должна еще сама проверять внутренние условия
-     * своего продолжения (условия выполнения MakeATurn)
-     */
-}
-
-bool SimpleTest2(Game game)
-{
-    var inputSequence = new (int x, int y)[]
-    {
-        (0,0), (1,1), (2,2),
-    };
-    
-    TurnState lastState = TurnState.NormalTurn;
-    foreach(var item in inputSequence)
-    {
-        lastState = game.MakeATurn(item.x, item.y);
-        RedrawBoard(game);
-        Thread.Sleep(75);
-    }
-    return lastState == TurnState.NormalTurn;
-}
-
-//bool MakeATurnAndDraw(Game game, int x, int y)
-//{
-//    // Вот здесь я уже не знаю что сказать после знака сравнения
-//    // Поэтому нумерации долж
-//    // game.MakeATurn(x, y) == ...
-
-//    if(game.MakeATurn(x, y) == TurnState.GameFinshed)
-//    {
-//        return false;
-//    }
-
-//    RedrawBoard(game);
-//    Thread.Sleep(150);
-
-//    return true;
-//}
-    
 
 void Start(Game game)
 {
-    RedrawBoard(game);
+    BoardDrawer.RedrawBoard(game, false);
     Console.WriteLine("Type exit to exit");
     while(true)
     {
@@ -135,7 +49,7 @@ void Start(Game game)
 
         TurnState res = game.MakeATurn(x, y);
 
-        RedrawBoard(game);
+        BoardDrawer.RedrawBoard(game, false);
 
         // cell is captured already
         if(res == TurnState.WrongInput) 
@@ -156,19 +70,4 @@ void Start(Game game)
     System.Console.WriteLine("Game is over! Winner is: " + winnerStr);
 }
 
-void RedrawBoard(Game game)
-{
-    if(!isDebug)
-        Console.Clear();
-    for(int i = 0; i < game.Arr.Length; i++)
-    {
-        if(i != 0 && i % game.Size == 0)
-        {
-            Console.WriteLine();
-        }
-        Console.Write(game.Arr[i] + " ");
-    }
-    Console.WriteLine();
-    Console.WriteLine();
-}
 
