@@ -18,31 +18,32 @@ public partial class MainWindow : Window
 
         game = new Game();
        
-        int size = 3;        
+        int size = 4;      
+        int cellSize = 50;
 
         Grid myGrid = new Grid();
-        myGrid.Width = 150;
-        myGrid.Height = 150;
+        myGrid.Width = size * cellSize;
+        myGrid.Height = size * cellSize;
         myGrid.ShowGridLines = true;
         myGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
         myGrid.VerticalAlignment= VerticalAlignment.Stretch;
 
 
-        for(int i = 0; i < game.Size; i++)
+        for(int i = 0; i < size; i++)
         {
             var newColDef = new ColumnDefinition();
-            newColDef.Width = new GridLength(50);
-            newColDef.MinWidth = 50;
-            newColDef.MaxWidth = 50;
+            newColDef.Width = new GridLength(cellSize);
+            newColDef.MinWidth = cellSize;
+            newColDef.MaxWidth = cellSize;
             myGrid.ColumnDefinitions.Add(newColDef);
         }
 
-        for(int i = 0; i < game.Size; i++)
+        for(int i = 0; i < size; i++)
         {
             var newRowDef = new RowDefinition();
-            newRowDef.Height = new GridLength(50);
-            newRowDef.MinHeight = 50;
-            newRowDef.MaxHeight = 50;
+            newRowDef.Height = new GridLength(cellSize);
+            newRowDef.MinHeight = cellSize;
+            newRowDef.MaxHeight = cellSize;
             myGrid.RowDefinitions.Add(newRowDef);
         }
 
