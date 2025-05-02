@@ -7,11 +7,14 @@ namespace Magicboard.Tikitaki
         char[] _arr = new char[9];
         char[] _avatars = new char[3] { '-', 'x', 'o' };
         int _currentInputIndex = 1;
+        private bool _isFinished;
         
         public int GameRes { get; private set; }
         public int Size { get => 3; }
         public char CurrentAvatar { get => _avatars[_currentInputIndex]; }
         public char[] Arr { get => _arr; }
+
+        public bool IsFinished { get => _isFinished; }
 
         public Game()
         {
@@ -19,7 +22,6 @@ namespace Magicboard.Tikitaki
             {
                 _arr[i] = '-';
             }
-            System.Console.WriteLine("Game");
         } 
 
 /*
@@ -38,11 +40,13 @@ namespace Magicboard.Tikitaki
 
             if(CheckWinCondition())
             {
+                _isFinished = true;
                 return TurnState.GameFinshed; // game is won by somebody 
             }
             if(CheckNoEmptyCellsCondition())
             {
                 _currentInputIndex = 0;
+                _isFinished = true;
                 return TurnState.GameFinshed; 
             }
 
