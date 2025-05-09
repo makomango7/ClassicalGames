@@ -1,89 +1,97 @@
 ﻿using Magicboard.Tikitaki;
 
-namespace TikitakiCLI
+namespace TikitakiCLI;
+
+internal static class Tester
 {
-    internal static class Tester
+
+    private static bool _visualDebug = false;
+    internal static void RunTests()
     {
-        private static bool _visualDebug = false;
-        internal static void RunTests()
+        var tests = new List<Func<bool>>()
         {
-            var tests = new List<Func<bool>>()
-            {
-                () => Tester.SimpleTest1(new Game()),
-                () => Tester.SimpleTest2(new Game())
-            };
+
+            () => Tester.SimpleTest1(),
+            () => Tester.SimpleTest2()
+        };
 
 
-            var results = new List<(bool, string)>();
+        var results = new List<(bool, string)>();
 
-            foreach (var test in tests)
-            {
-                results.Add((test.Invoke(), test.Method.Name));
-            }
-
-
-            bool res = true;
-            foreach (var result in results)
-            {
-                res &= result.Item1;
-                Console.WriteLine($"{result.Item2} : {result.Item1}");
-            }
-
-            System.Console.WriteLine("All test result: " + res);
-            Thread.Sleep(150);
-        
-        #if !DEBUG
-            Console.Clear();
-        #endif
-
+        foreach (var test in tests)
+        {
+            results.Add((test.Invoke(), test.Method.Name));
         }
 
 
-        static bool SimpleTest1(Game game)
+        bool res = true;
+        foreach (var result in results)
         {
-            // Запускать с хоста и извлекать дефолтный рисователь
-            var drawer = new BoardDrawer();
-            var inputSequence = new (int x, int y)[]
-            {
-                (0,0), (1,1), (2,2),
-                (1,0), (2,1), (0,1),
-                (0,2), (2,0), (1,2)
-            };
-
-            TurnState lastState = TurnState.NormalTurn;
-            foreach (var item in inputSequence)
-            {
-                lastState = game.MakeATurn(item.x, item.y);
-
-                if(_visualDebug) 
-                    drawer.RedrawSquareBoard(game, false);
-                Thread.Sleep(75);
-            }
-            return lastState == TurnState.GameFinshed;
-            /*
-             * Под вопросом:
-             * Все-таки, игра должна еще сама проверять внутренние условия
-             * своего продолжения (условия выполнения MakeATurn)
-             */
+            res &= result.Item1;
+            Console.WriteLine($"{result.Item2} : {result.Item1}");
         }
 
-        static bool SimpleTest2(Game game)
-        {
-            var drawer = new BoardDrawer();
-            var inputSequence = new (int x, int y)[]
-            {
-                (0,0), (1,1), (2,2),
-            };
+        System.Console.WriteLine("All test result: " + res);
+        Thread.Sleep(150);
+    
+    #if !DEBUG
+        Console.Clear();
+    #endif
 
-            TurnState lastState = TurnState.NormalTurn;
-            foreach (var item in inputSequence)
-            {
-                lastState = game.MakeATurn(item.x, item.y);
-                if(_visualDebug) 
-                    drawer.RedrawSquareBoard(game, false);
-                Thread.Sleep(75);
-            }
-            return lastState == TurnState.NormalTurn;
+    }
+
+
+    static bool SimpleTest1()
+    {
+        System.Console.WriteLine("Running test 1");
+
+        // Для каждого теста нужен свой экземпляр игры
+        var game = new Game();
+        var drawer = new BoardDrawer();
+        // Запускать с хоста и извлекать дефолтный рисователь
+        var inputSequence = new (int x, int y)[]
+        {
+            (0,0), (1,1), (2,2),
+            (1,0), (2,1), (0,1),
+            (0,2), (2,0), (1,2)
+        };
+
+        TurnState lastState = TurnState.NormalTurn;
+        foreach (var item in inputSequence)
+        {
+            lastState = game.MakeATurn(item.x, item.y);
+
+            if(_visualDebug) 
+                drawer.RedrawSquareBoard(game, false);
+            Thread.Sleep(75);
         }
+        return lastState == TurnState.GameFinshed;
+        /*
+            * Под вопросом:
+            * Все-таки, игра должна еще сама проверять внутренние условия
+            * своего продолжения (условия выполнения MakeATurn)
+            */
+    }
+
+    static bool SimpleTest2()
+    {
+        System.Console.WriteLine("Running test 2");
+        var game = new Game();
+        var drawer = new BoardDrawer();
+
+        var inputSequence = new (int x, int y)[]
+        {
+            (0,0), (1,1), (2,2),
+        };
+
+        TurnState lastState = TurnState.NormalTurn;
+        foreach (var item in inputSequence)
+        {
+            lastState = game.MakeATurn(item.x, item.y);
+            if(_visualDebug) 
+                drawer.RedrawSquareBoard(game, false);
+            Thread.Sleep(75);
+        }
+        return lastState == TurnState.NormalTurn;
     }
 }

@@ -1,17 +1,12 @@
 ﻿using Magicboard.Tikitaki;
 using TikitakiCLI;
 
-
-
 Tester.RunTests();
+Start();
 
-Start(new Game());
-
-
-
-
-void Start(Game game)
+void Start()
 {
+    Game game = new Game();
     var drawer = new BoardDrawer(BoardDrawer.Set3);
     drawer.RedrawSquareBoard(game, false);
     Console.WriteLine("Type exit to exit");
@@ -73,3 +68,21 @@ void Start(Game game)
     System.Console.WriteLine("Game is over! Winner is: " + winnerStr);
 }
 
+
+internal class GameHost
+{
+    BoardDrawer drawer = new BoardDrawer();
+    Game game = new Game();
+
+    public GameHost()
+    {
+
+    }
+
+    public void Run(Action action)
+    {
+        action.Invoke();
+    }
+
+    internal BoardDrawer GetDefaultDrawer() => drawer;
+}
