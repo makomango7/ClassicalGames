@@ -12,7 +12,8 @@ Start(new Game());
 
 void Start(Game game)
 {
-    BoardDrawer.RedrawSquareBoard(game, false);
+    var drawer = new BoardDrawer(BoardDrawer.Set3);
+    drawer.RedrawSquareBoard(game, false);
     Console.WriteLine("Type exit to exit");
     while(true)
     {
@@ -51,7 +52,7 @@ void Start(Game game)
 
         TurnState res = game.MakeATurn(x, y);
 
-        BoardDrawer.RedrawSquareBoard(game, false);
+        drawer.RedrawSquareBoard(game, false);
 
         // cell is captured already
         if(res == TurnState.WrongInput) 
@@ -68,7 +69,7 @@ void Start(Game game)
 
     }
     
-    string winnerStr = game.CurrentPlayer == Game.PlayerNULL? "nobody" : BoardDrawer.PlayerToAvatar(game.CurrentPlayer).ToString(); 
+    string winnerStr = game.CurrentPlayer == Game.PlayerNULL? "nobody" : drawer.PlayerToAvatar(game.CurrentPlayer).ToString(); 
     System.Console.WriteLine("Game is over! Winner is: " + winnerStr);
 }
 

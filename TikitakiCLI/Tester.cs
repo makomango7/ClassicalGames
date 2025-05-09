@@ -4,6 +4,7 @@ namespace TikitakiCLI
 {
     internal static class Tester
     {
+        private static bool _visualDebug = false;
         internal static void RunTests()
         {
             var tests = new List<Func<bool>>()
@@ -40,6 +41,8 @@ namespace TikitakiCLI
 
         static bool SimpleTest1(Game game)
         {
+            // Запускать с хоста и извлекать дефолтный рисователь
+            var drawer = new BoardDrawer();
             var inputSequence = new (int x, int y)[]
             {
                 (0,0), (1,1), (2,2),
@@ -51,7 +54,9 @@ namespace TikitakiCLI
             foreach (var item in inputSequence)
             {
                 lastState = game.MakeATurn(item.x, item.y);
-                BoardDrawer.RedrawSquareBoard(game, false);
+
+                if(_visualDebug) 
+                    drawer.RedrawSquareBoard(game, false);
                 Thread.Sleep(75);
             }
             return lastState == TurnState.GameFinshed;
@@ -64,6 +69,7 @@ namespace TikitakiCLI
 
         static bool SimpleTest2(Game game)
         {
+            var drawer = new BoardDrawer();
             var inputSequence = new (int x, int y)[]
             {
                 (0,0), (1,1), (2,2),
@@ -73,28 +79,11 @@ namespace TikitakiCLI
             foreach (var item in inputSequence)
             {
                 lastState = game.MakeATurn(item.x, item.y);
-                BoardDrawer.RedrawSquareBoard(game, false);
+                if(_visualDebug) 
+                    drawer.RedrawSquareBoard(game, false);
                 Thread.Sleep(75);
             }
             return lastState == TurnState.NormalTurn;
         }
-
-        //bool MakeATurnAndDraw(Game game, int x, int y)
-        //{
-        //    // Вот здесь я уже не знаю что сказать после знака сравнения
-        //    // Поэтому нумерации долж
-        //    // game.MakeATurn(x, y) == ...
-
-        //    if(game.MakeATurn(x, y) == TurnState.GameFinshed)
-        //    {
-        //        return false;
-        //    }
-
-        //    RedrawBoard(game);
-        //    Thread.Sleep(150);
-
-        //    return true;
-        //}
-
     }
 }

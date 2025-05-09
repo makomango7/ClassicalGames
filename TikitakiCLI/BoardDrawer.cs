@@ -2,9 +2,21 @@
 
 namespace TikitakiCLI
 {
-    internal static class BoardDrawer
+    internal class BoardDrawer
     {
-        internal static void RedrawSquareBoard(Game game, bool isDebug)
+
+        internal char[] WorkingSet; 
+
+        internal BoardDrawer()
+        {
+            WorkingSet = Set1;
+        }
+        internal BoardDrawer(char[] workingSet)
+        {
+            WorkingSet = workingSet;
+        }
+
+        internal void RedrawSquareBoard(Game game, bool isDebug)
         {
             if(game.Arr.Length != game.Size * game.Size)
             {
@@ -30,32 +42,29 @@ namespace TikitakiCLI
         }
 
 
-        internal static char PlayerToAvatar(int playerId)
+        internal char PlayerToAvatar(int playerId)
         {
-            switch(playerId)
-            {
-                case 0:
-                    return '-';
-                case 1: 
-                    return 'x';
-                case 2:
-                    return 'o';
-            }
-            throw new System.Exception("No such a player");
+            return WorkingSet[playerId];
         }
 
-        internal static Dictionary<int, char> Set1 = new Dictionary<int, char>()
+        internal static char[] Set1 = new char[]
         {
-            {0,'-' },
-            {1, 'x' },
-            {2, 'o' }
+            '-', '0', '1'
         };
 
-        internal static Dictionary<int, char> Set2 = new Dictionary<int, char>()
+        internal static char[] Set2 = new char[]
         {
-            {0, '$' },
-            {1, '%' },
-            {2, '^' }
+            '-', 'x', 'o'
+        };
+
+        internal static char[] Set3 = new char[]
+        {
+            ' ', '+', '-'
+        };
+        
+        internal static char[] Set4 = new char[]
+        {
+            ' ', '$', '|'
         };
     }
 }
