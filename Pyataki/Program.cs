@@ -1,1 +1,0 @@
-﻿var game = new Pyataki.Game();
