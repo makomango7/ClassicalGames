@@ -30,7 +30,11 @@ namespace TikitakiCLI
 
             System.Console.WriteLine("All test result: " + res);
             Thread.Sleep(150);
+        
+        #if !DEBUG
             Console.Clear();
+        #endif
+
         }
 
 
@@ -47,7 +51,7 @@ namespace TikitakiCLI
             foreach (var item in inputSequence)
             {
                 lastState = game.MakeATurn(item.x, item.y);
-                BoardDrawer.RedrawBoard(game, false);
+                BoardDrawer.RedrawSquareBoard(game, false);
                 Thread.Sleep(75);
             }
             return lastState == TurnState.GameFinshed;
@@ -69,7 +73,7 @@ namespace TikitakiCLI
             foreach (var item in inputSequence)
             {
                 lastState = game.MakeATurn(item.x, item.y);
-                BoardDrawer.RedrawBoard(game, false);
+                BoardDrawer.RedrawSquareBoard(game, false);
                 Thread.Sleep(75);
             }
             return lastState == TurnState.NormalTurn;

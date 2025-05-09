@@ -1,6 +1,8 @@
 ﻿using Magicboard.Tikitaki;
 using TikitakiCLI;
 
+
+
 Tester.RunTests();
 
 Start(new Game());
@@ -10,7 +12,7 @@ Start(new Game());
 
 void Start(Game game)
 {
-    BoardDrawer.RedrawBoard(game, false);
+    BoardDrawer.RedrawSquareBoard(game, false);
     Console.WriteLine("Type exit to exit");
     while(true)
     {
@@ -49,7 +51,7 @@ void Start(Game game)
 
         TurnState res = game.MakeATurn(x, y);
 
-        BoardDrawer.RedrawBoard(game, false);
+        BoardDrawer.RedrawSquareBoard(game, false);
 
         // cell is captured already
         if(res == TurnState.WrongInput) 
@@ -66,8 +68,7 @@ void Start(Game game)
 
     }
     
-    string winnerStr = game.CurrentAvatar == '-' ? "nobody" : game.CurrentAvatar.ToString(); 
+    string winnerStr = game.CurrentPlayer == Game.PlayerNULL? "nobody" : BoardDrawer.PlayerToAvatar(game.CurrentPlayer).ToString(); 
     System.Console.WriteLine("Game is over! Winner is: " + winnerStr);
 }
-
 

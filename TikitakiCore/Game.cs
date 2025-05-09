@@ -4,15 +4,20 @@ namespace Magicboard.Tikitaki
 {
     public class Game
     {
-        char[] _arr = new char[9];
-        char[] _avatars = new char[3] { '-', 'x', 'o' };
+        public static readonly int PlayerNULL = 0;
+        public static readonly int PlayerONE = 1;
+
+        private int _configurationPlayersCount = 2;
+        private int _configurationSize = 3;
+
+        int[] _arr = new int[9];
         int _currentInputIndex = 1;
         private bool _isFinished;
         
         public int GameRes { get; private set; }
-        public int Size { get => 3; }
-        public char CurrentAvatar { get => _avatars[_currentInputIndex]; }
-        public char[] Arr { get => _arr; }
+        public int Size { get => _configurationSize; }
+        public int CurrentPlayer { get => _currentInputIndex; }
+        public int[] Arr { get => _arr; }
 
         public bool IsFinished { get => _isFinished; }
 
@@ -20,7 +25,7 @@ namespace Magicboard.Tikitaki
         {
             for(int i = 0; i < _arr.Length; i++)
             {
-                _arr[i] = '-';
+                _arr[i] = PlayerNULL;
             }
         } 
 
@@ -32,11 +37,11 @@ namespace Magicboard.Tikitaki
         
         public TurnState MakeATurn(int x, int y) 
         {
-            if(_arr[GetIndex(x, y, Size)] != '-')
+            if(_arr[GetIndex(x, y, Size)] != PlayerNULL)
             {
                 return TurnState.WrongInput;  // cell should be not captured! 
             }
-            _arr[GetIndex(x, y, Size)] = CurrentAvatar;
+            _arr[GetIndex(x, y, Size)] = _currentInputIndex;
 
             if(CheckWinCondition())
             {
@@ -63,9 +68,9 @@ namespace Magicboard.Tikitaki
         private void RotatePlayer()
         {
             _currentInputIndex++; 
-            if((int)_currentInputIndex > 2)
+            if((int)_currentInputIndex > _configurationPlayersCount)
             {
-                _currentInputIndex = 1;
+                _currentInputIndex = PlayerONE;
             }
         }
 
@@ -75,7 +80,7 @@ namespace Magicboard.Tikitaki
         {
             for(int i = 0; i < _arr.Length; i++)
             {
-                if(_arr[i] == '-')
+                if(_arr[i] == PlayerNULL)
                 { 
                     return false;        // there is still an '-' cell!
                 }
@@ -89,7 +94,6 @@ namespace Magicboard.Tikitaki
            for(int x = 0; x < Size; x++)
            {
                 win = CheckVerticalLineWinCondition(x);
-                Console.Write("X: " + x + " " + win + "; \n");
                 if(win)
                 {
                     return true;
@@ -99,8 +103,6 @@ namespace Magicboard.Tikitaki
            for(int y = 0; y < Size; y++)
            {
                 win = CheckHorizontalLineWinCondition(y);
-
-                Console.Write("Y: " + y + " " + win + "; \n");
                 if(win)
                 {
                     return true;
@@ -113,7 +115,7 @@ namespace Magicboard.Tikitaki
         private bool CheckVerticalLineWinCondition(int x)
         {
             int index = GetIndex(x, 0, Size);
-            if(_arr[index] == '-')
+            if(_arr[index] == PlayerNULL)
             {
                 return false;
             }
@@ -129,7 +131,7 @@ namespace Magicboard.Tikitaki
         private bool CheckHorizontalLineWinCondition(int y)
         {
             int index = GetIndex(0, y, Size);
-            if(_arr[index] == '-')
+            if(_arr[index] == PlayerNULL)
             {
                 return false;
             }
@@ -145,7 +147,7 @@ namespace Magicboard.Tikitaki
         private bool CheckDiagonalWinCondition()
         {
             int index = GetIndex(0, 0, Size);
-            if(_arr[index] == '-')
+            if(_arr[index] == PlayerNULL)
             {
                 return false;
             }
@@ -156,11 +158,10 @@ namespace Magicboard.Tikitaki
             }
             if(result)
             {
-                Console.WriteLine("First diagonal: "  + result + "\n");
                 return true;
             }
             index = GetIndex(Size - 1, 0, Size);
-            if(_arr[index] == '-')
+            if(_arr[index] == PlayerNULL)
             {
                 return false;
             }
@@ -171,7 +172,6 @@ namespace Magicboard.Tikitaki
             }
             if(result)
             {
-                Console.WriteLine("Second diagonal: "  + result + "\n");
                 return true;
             }
 
